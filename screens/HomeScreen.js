@@ -9,6 +9,8 @@ import {
   View,
 } from 'react-native';
 
+import Test from '../components/Test'
+
 export default class HomeScreen extends React.Component {
   static navigationOptions = {
     header: null,
@@ -17,7 +19,7 @@ export default class HomeScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text>Hello</Text>
+        <Test text='Test text'/>
       </View>
     );
   }
@@ -26,6 +28,6 @@ export default class HomeScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#ccffff',
   }
 });
