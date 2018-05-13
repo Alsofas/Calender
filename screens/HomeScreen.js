@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import {
   Image,
   Platform,
@@ -8,84 +8,40 @@ import {
   TouchableOpacity,
   View,
   Alert
-} from 'react-native';
+} from 'react-native'
 
-import CalendarDay from '../components/CalendarDay'
-import CalendarHeader from '../components/CalendarHeader'
-import CalendarWeekDays from '../components/CalendarWeekDays'
+import { Calendar, CalendarList, Agenda } from 'react-native-calendars'
 
 export default class HomeScreen extends React.Component {
   static navigationOptions = {
     header: null,
-  };
-
-  state = {
-    numberOfDays: null
-  }
-
-  componentWillMount = () => {
-    let monthIndex = new Date().getMonth()
-    let year = new Date().getFullYear()
-
-    this.setState({numberOfDays: new Date(year, monthIndex, 0).getDate()});
-  }
-
-  _getThisMonth = () => {
-    const thisMonth = new Date().getMonth();
-
-    switch(thisMonth) {
-      case 0:
-        return 'January'
-      case 4:
-        return 'May'
-    }
-  }
-
-  _getFirstDayInMonth = () => {
-    let monthIndex = new Date().getMonth()
-    let year = new Date().getFullYear()
-
-    let date = `${year}-0${monthIndex + 1}-01`
-
-    return new Date(date).getDay()
   }
 
   render() {
-    const thisMonth = this._getThisMonth()
-    const firstDayInMonth = this._getFirstDayInMonth()
-
-    const numberOfDays = this.state.numberOfDays
-    const calendarDays = []
-    
-    for(let i = 1; i<firstDayInMonth; i++) {
-      calendarDays.push(
-        <CalendarDay blank={true}/>
-      )
-    }
-
-    for(let i = 1; i<=numberOfDays/4; i++) {
-      calendarDays.push(
-        <CalendarDay day={i}/>
-      )
-    }
-
-    for(let i = 1; i<=numberOfDays/4; i++) {
-      calendarDays.push(
-        <CalendarDay day={i}/>
-      )
-    }
-
     return (
       <View style={styles.container}>
-        <View style={styles.calendarHeader}>
-          <CalendarHeader month={thisMonth}/>
-        </View>
-        <View style={styles.calendarWeekDays}>
-          <CalendarWeekDays month={thisMonth}/>
-        </View>
-        <View style={styles.calendarDays}>
-          {calendarDays}
-        </View>
+        <Calendar
+          // Handler which gets executed on day press. Default = undefined
+          onDayPress={(day) => {console.log('selected day', day)}}
+          // Handler which gets executed on day long press. Default = undefined
+          onDayLongPress={(day) => {console.log('selected day', day)}}
+          // Month format in calendar title. Formatting values: http://arshaw.com/xdate/#Formatting
+          monthFormat={'yyyy MMMM'}
+          // Handler which gets executed when visible month changes in calendar. Default = undefined
+          onMonthChange={(month) => {console.log('month changed', month)}}
+          // Do not show days of other months in month page. Default = false
+          hideExtraDays={true}
+          // day from another month that is visible in calendar page. Default = false
+          disableMonthChange={true}
+          // If firstDay=1 week starts from Monday. Note that dayNames and dayNamesShort should still start from Sunday.
+          firstDay={1}
+          // Show week numbers to the left. Default = false
+          showWeekNumbers={true}
+          // Handler which gets executed when press arrow icon left. It receive a callback can go back month
+          onPressArrowLeft={substractMonth => substractMonth()}
+          // Handler which gets executed when press arrow icon left. It receive a callback can go next month
+          onPressArrowRight={addMonth => addMonth()}
+        />
       </View>
     );
   }
@@ -97,18 +53,5 @@ const styles = StyleSheet.create({
     top: 70,
     backgroundColor: '#afd7ff',
   },
-  calendarHeader: {
-    flex: 2,
-    maxHeight: 45
-  },
-  calendarWeekDays: {
-    flex: 3,
-    maxHeight: 45,
-  },
-  calendarDays: {
-    flexDirection: 'row',
-    overflow: 'hidden',
-    backgroundColor: '#fff'
-  }
 });
 
