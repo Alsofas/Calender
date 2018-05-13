@@ -10,7 +10,9 @@ import {
   Alert
 } from 'react-native';
 
-import WhiteBox from '../components/WhiteBox'
+import CalendarDay from '../components/CalendarDay'
+import CalendarHeader from '../components/CalendarHeader'
+import CalendarWeekDays from '../components/CalendarWeekDays'
 
 export default class HomeScreen extends React.Component {
   static navigationOptions = {
@@ -22,7 +24,10 @@ export default class HomeScreen extends React.Component {
   }
 
   componentWillMount = () => {
-    this.setState({numberOfDays: new Date(2018, 4, 0).getDate()});
+    let monthIndex = new Date().getMonth()
+    let year = new Date().getFullYear()
+
+    this.setState({numberOfDays: new Date(year, monthIndex, 0).getDate()});
   }
 
   _getThisMonth = () => {
@@ -36,52 +41,74 @@ export default class HomeScreen extends React.Component {
     }
   }
 
+  _getFirstDayInMonth = () => {
+    let monthIndex = new Date().getMonth()
+    let year = new Date().getFullYear()
+
+    let date = `${year}-0${monthIndex + 1}-01`
+
+    return new Date(date).getDay()
+  }
+
   render() {
     const thisMonth = this._getThisMonth()
+    const firstDayInMonth = this._getFirstDayInMonth()
 
-    let rows = 5;
-    let whiteBoxesRow1 = []
-    let whiteBoxesRow2 = []
-    let whiteBoxesRow3 = []
-    let whiteBoxesRow4 = []
-    let whiteBoxesRow5 = []
+    const numberOfDays = this.state.numberOfDays
+    const calendarDays = []
+    
+    for(let i = 1; i<firstDayInMonth; i++) {
+      calendarDays.push(
+        <CalendarDay blank={true}/>
+      )
+    }
 
-    for(let i = 1; i<this.state.numberOfDays-22; i++) {
-      whiteBoxesRow1.push(<WhiteBox day={i}/>)
+    for(let i = 1; i<=numberOfDays/4; i++) {
+      calendarDays.push(
+        <CalendarDay day={i}/>
+      )
     }
-    for(let i = 8; i<this.state.numberOfDays-15; i++) {
-      whiteBoxesRow2.push(<WhiteBox day={i}/>)
-    }
-    for(let i = 15; i<this.state.numberOfDays-8; i++) {
-      whiteBoxesRow3.push(<WhiteBox day={i}/>)
-    }
-    for(let i = 22; i<this.state.numberOfDays-1; i++) {
-      whiteBoxesRow4.push(<WhiteBox day={i}/>)
-    }
-    for(let i = 29; i<=this.state.numberOfDays; i++) {
-      whiteBoxesRow5.push(<WhiteBox day={i}/>)
+
+    for(let i = 1; i<=numberOfDays/4; i++) {
+      calendarDays.push(
+        <CalendarDay day={i}/>
+      )
     }
 
     return (
       <View style={styles.container}>
-        <Text>{thisMonth}</Text>
-        <View>{whiteBoxesRow1}</View>
-        <View>{whiteBoxesRow2}</View>
-        <View>{whiteBoxesRow3}</View>
-        <View>{whiteBoxesRow4}</View>
-        <View>{whiteBoxesRow5}</View>
+        <View style={styles.calendarHeader}>
+          <CalendarHeader month={thisMonth}/>
+        </View>
+        <View style={styles.calendarWeekDays}>
+          <CalendarWeekDays month={thisMonth}/>
+        </View>
+        <View style={styles.calendarDays}>
+          {calendarDays}
+        </View>
       </View>
     );
-
   }
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    top: 50,
-    flexDirection: 'row',
-    alignItems: 'flex-start',
+    top: 70,
     backgroundColor: '#afd7ff',
+  },
+  calendarHeader: {
+    flex: 2,
+    maxHeight: 45
+  },
+  calendarWeekDays: {
+    flex: 3,
+    maxHeight: 45,
+  },
+  calendarDays: {
+    flexDirection: 'row',
+    overflow: 'hidden',
+    backgroundColor: '#fff'
   }
 });
 
