@@ -7,7 +7,8 @@ import {
   Text,
   TouchableOpacity,
   View,
-  Alert
+  Alert,
+  FlatList
 } from 'react-native'
 
 import { Calendar, CalendarList, Agenda } from 'react-native-calendars'
@@ -19,28 +20,33 @@ export default class HomeScreen extends React.Component {
 
   state = {
     clickedDate: '',
-    messages: [
-      { date: '2018-05-20', message:  'Have a nice day!'},
-      { date: '2018-05-21', message:  'Have a nice day 2!'}
-    ]
+    messages: []  
   }
+
+  messages = [
+    { id: 1, date: '2018-05-20', message:  'Have a nice day!'},
+    { id: 2, date: '2018-05-20', message:  'Have a nice day 2!'},
+    { id: 3, date: '2018-05-21', message:  'Have a nice day 3!'},
+  ]
 
   _showMessages = (dateString) => {
     this.setState({clickedDate: dateString})
 
+    let messagesForThisDate = []
 
+    messagesForThisDate = this.messages.filter((m) => {
+      if(m.date === dateString)
+        return m
+    })
 
+    this.setState({messages: messagesForThisDate})
   }
+
+  _keyExtractor = (item, index) => item.id.toString();
 
   render() {
     const clickedDate = this.state.clickedDate;
     const dateToMark = {clickedDate: {selected: true, selectedColor: 'blue'}};
-
-    let messages;
-
-    for(let i = 0; i<this.state.messages; i++) {
-      messages.push(<Text>{this.state.messages[i].message}</Text>)
-    }
 
     return (
       <View style={styles.container}>
@@ -69,9 +75,12 @@ export default class HomeScreen extends React.Component {
          markedDates={{[this.state.clickedDate]: {selected: true, selectedColor: 'blue'}}}
           // Collection of dates that have to be marked. Default = {}
         />
-        <View>
-          <Text>{this.state.messages[0].message}</Text>
-        </View>
+        <FlatList
+          data={this.state.messages}
+          extraData={this.state}
+          keyExtractor={this._keyExtractor}
+          renderItem={({item}) => <Text>{item.message}</Text>}
+        />
       </View>
     );
   }
